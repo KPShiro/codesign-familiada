@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+
+@utility ping-outline-size-* {
+  --ping-outline-size: calc(--value(integer) * 1px);
+  --ping-outline-size: --value([length]);
+}
+
+@utility ping-outline-color-* {
+  --ping-outline-color: --value(--color-*);
+  --ping-outline-color: --value([color]);
+}
+
+@utility animate-ping-outline {
+  animation: ping-outline-animation var(--tw-duration, 1.5s) infinite;
+}
+
+@keyframes ping-outline-animation {
+  0% {
+    box-shadow: 0 0 0 0 var(--ping-outline-color, currentcolor);
+  }
+  100% {
+    box-shadow: 0 0 0 var(--ping-outline-size, 12px) transparent;
+  }
+}

@@ -1,31 +1,31 @@
 'use client'
 
 import { useGameStore } from '@/lib/store'
+import InteractiveCard from '../shared/interactive-card'
 
 export default function QuestionSelector() {
   const { questions, currentQuestionIndex, loadQuestion } = useGameStore()
 
   return (
-    <div className="flex flex-col gap-2">
-      <h2 className="mb-1 text-sm font-bold tracking-wider text-blue-300 uppercase">
-        Pytania ({questions.length})
-      </h2>
-      <div className="flex max-h-[calc(100vh-8rem)] flex-col gap-1 overflow-y-auto pr-1">
+    <div className="relative isolate flex h-full flex-col">
+      <div className="p-6">
+        <h2 className="font-semibold uppercase">
+          Questions ({questions.length})
+        </h2>
+      </div>
+      <div className="flex flex-col gap-1 overflow-y-auto p-6 pt-0">
         {questions.map((q, i) => (
-          <button
+          <InteractiveCard
             key={q.id}
             onClick={() => loadQuestion(i)}
-            className={`w-full rounded-lg border px-3 py-2 text-left text-sm transition-all ${
-              currentQuestionIndex === i
-                ? 'border-yellow-400 bg-yellow-950/40 font-semibold text-yellow-300'
-                : 'border-blue-800 bg-blue-950/40 text-blue-200 hover:border-blue-500 hover:bg-blue-900/40'
-            }`}
+            isSelected={currentQuestionIndex === i}
+            className="flex items-center gap-3"
           >
-            <span className="mr-2 font-mono text-xs text-blue-500">
-              {i + 1}.
-            </span>
-            {q.text}
-          </button>
+            <div className="font-mono text-sm text-current/50">
+              {`${i < 9 ? '0' + (i + 1) : i + 1}`}.
+            </div>
+            <div className="truncate text-sm">{q.text}</div>
+          </InteractiveCard>
         ))}
       </div>
     </div>

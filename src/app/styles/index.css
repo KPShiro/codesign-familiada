@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './animations/ping-outline.css';
 
 :root {
   --bg-board: #0a1628;
@@ -10,17 +11,39 @@
 }
 
 @theme {
-  --color-primary: var(--color-blue-500);
-  --color-on-primary: var(--color-white);
+  --color-primary: var(--color-yellow-400);
+  --color-on-primary: var(--color-yellow-950);
 
-  --color-surface-0: var(--color-gray-900);
-  --color-on-surface-0: var(--color-gray-100);
+  --color-danger: var(--color-red-500);
+  --color-on-danger: var(--color-white);
+
+  --color-surface-0: var(--color-gray-950);
+  --color-on-surface-0: var(--color-gray-50);
+
+  --color-surface-1: var(--color-gray-900);
+  --color-on-surface-1: var(--color-gray-50);
+
+  --container-page: 1024px;
+
+  --opacity-disabled: 0.5;
 }
 
 body {
-  background: var(--color-surface-0);
   color: var(--color-on-surface-0);
-  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(
+    var(--color-surface-0) 0%,
+    var(--color-surface-1) 100%
+  );
+}
+
+code {
+  --bg-color: color-mix(in srgb, currentcolor 15%, transparent);
+
+  background-color: var(--bg-color);
+  outline: 0.25em solid var(--bg-color);
+  border-radius: var(--radius-xs);
+  padding: 0em 0.375em;
+  margin: 0 0.25em;
 }
 
 /* ── Answer Card Flip Animation ── */

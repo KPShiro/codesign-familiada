@@ -1,5 +1,5 @@
-import { create } from 'zustand'
 import questionsData from '@/data/questions.json'
+import { create } from 'zustand'
 
 export interface Answer {
   id: number
@@ -34,6 +34,8 @@ export interface FastMoneyPlayerAnswer {
 
 export type GamePhase = 'idle' | 'playing' | 'steal' | 'round_end' | 'fastmoney'
 
+export const MAX_STRIKES = 3
+
 export interface GameState {
   // Data
   questions: Question[]
@@ -44,7 +46,6 @@ export interface GameState {
   activeTeam: 0 | 1 | null
   strikes: number
   roundPoints: number
-  multiplier: number
   phase: GamePhase
 
   // Teams
@@ -62,11 +63,11 @@ export interface GameState {
   revealAnswer: (answerId: number) => void
   hideAnswer: (answerId: number) => void
   revealAllAnswers: () => void
+  hideAllAnswers: () => void
   addStrike: () => void
   resetStrikes: () => void
   setActiveTeam: (team: 0 | 1 | null) => void
   addRoundPointsToTeam: (team: 0 | 1) => void
-  setMultiplier: (n: number) => void
   setPhase: (phase: GamePhase) => void
   setTeamName: (team: 0 | 1, name: string) => void
   setTeamScore: (team: 0 | 1, score: number) => void
@@ -130,7 +131,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   activeTeam: null,
   strikes: 0,
   roundPoints: 0,
-  multiplier: 1,
   phase: 'idle',
 
   teams: [
@@ -172,7 +172,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     const points = updated.answers.find((a) => a.id === answerId)?.points ?? 0
     set({
       currentQuestion: updated,
-      roundPoints: get().roundPoints + points * get().multiplier,
+      roundPoints: get().roundPoints + points,
     })
   },
 
@@ -181,7 +181,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (!cq) return
     const answer = cq.answers.find((a) => a.id === answerId)
     if (!answer || !answer.revealed) return
-    const pointsToSubtract = answer.points * get().multiplier
+    const pointsToSubtract = answer.points
     set({
       currentQuestion: {
         ...cq,
@@ -204,10 +204,21 @@ export const useGameStore = create<GameState>((set, get) => ({
     })
   },
 
+  hideAllAnswers: () => {
+    const cq = get().currentQuestion
+    if (!cq) return
+    set({
+      currentQuestion: {
+        ...cq,
+        answers: cq.answers.map((a) => ({ ...a, revealed: false })),
+      },
+    })
+  },
+
   addStrike: () => {
-    const strikes = Math.min(get().strikes + 1, 3)
+    const strikes = Math.min(get().strikes + 1, MAX_STRIKES)
     set({ strikes })
-    if (strikes >= 3) {
+    if (strikes >= MAX_STRIKES) {
       set({ phase: 'steal' })
     }
   },
@@ -224,8 +235,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
     set({ teams, roundPoints: 0, phase: 'round_end' })
   },
-
-  setMultiplier: (n) => set({ multiplier: n }),
 
   setPhase: (phase) => set({ phase }),
 
@@ -256,7 +265,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       currentQuestionIndex: null,
       strikes: 0,
       roundPoints: 0,
-      multiplier: 1,
       phase: 'idle',
       activeTeam: null,
     }),
@@ -338,7 +346,6 @@ export type GameSnapshot = Omit<
   | 'resetStrikes'
   | 'setActiveTeam'
   | 'addRoundPointsToTeam'
-  | 'setMultiplier'
   | 'setPhase'
   | 'setTeamName'
   | 'setTeamScore'
@@ -359,7 +366,6 @@ export function getSnapshot(state: GameState): GameSnapshot {
     activeTeam: state.activeTeam,
     strikes: state.strikes,
     roundPoints: state.roundPoints,
-    multiplier: state.multiplier,
     phase: state.phase,
     teams: state.teams,
     fastMoneyQuestions: state.fastMoneyQuestions,
