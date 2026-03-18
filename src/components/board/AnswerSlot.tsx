@@ -25,13 +25,15 @@ export default function AnswerSlot({ answer, index }: AnswerSlotProps) {
         {/* Front — hidden: empty dark slot */}
         <div className="answer-face answer-face-front" />
         {/* Back — revealed */}
-        <div className="answer-face answer-face-back px-3 gap-2 justify-between">
-          <span className="text-white/60 font-bold text-sm shrink-0">{index + 1}.</span>
-          <span className="text-white font-bold text-sm sm:text-base truncate flex-1 text-left pl-1">
+        <div className="answer-face answer-face-back justify-between gap-2 px-3">
+          <span className="shrink-0 text-sm font-bold text-white/60">
+            {index + 1}.
+          </span>
+          <span className="flex-1 truncate pl-1 text-left text-sm font-bold text-white sm:text-base">
             {answer.text}
           </span>
           <span
-            className="text-white font-black text-lg sm:text-xl shrink-0"
+            className="shrink-0 text-lg font-black text-white sm:text-xl"
             style={{ textShadow: '0 0 10px rgba(255,255,255,0.5)' }}
           >
             {answer.points}

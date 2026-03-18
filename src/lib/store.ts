@@ -75,24 +75,48 @@ export interface GameState {
 
   // Fast Money actions
   startFastMoney: () => void
-  setFastMoneyPlayerAnswer: (player: 1 | 2, index: number, answer: Partial<FastMoneyPlayerAnswer>) => void
+  setFastMoneyPlayerAnswer: (
+    player: 1 | 2,
+    index: number,
+    answer: Partial<FastMoneyPlayerAnswer>
+  ) => void
   setFastMoneyActivePlayer: (player: 1 | 2 | null) => void
   revealFastMoneyAnswer: (player: 1 | 2, index: number) => void
   revealAllFastMoneyAnswers: (player: 1 | 2) => void
 }
 
 const FAST_MONEY_QUESTIONS: FastMoneyQuestion[] = [
-  { id: 1, text: 'Podaj popularny kolor samochodu', correctAnswer: 'Czarny', points: 0 },
+  {
+    id: 1,
+    text: 'Podaj popularny kolor samochodu',
+    correctAnswer: 'Czarny',
+    points: 0,
+  },
   { id: 2, text: 'Podaj kraj w Europie', correctAnswer: 'Niemcy', points: 0 },
-  { id: 3, text: 'Podaj zwierzę żyjące w lesie', correctAnswer: 'Jeleń', points: 0 },
+  {
+    id: 3,
+    text: 'Podaj zwierzę żyjące w lesie',
+    correctAnswer: 'Jeleń',
+    points: 0,
+  },
   { id: 4, text: 'Podaj rzecz na plaży', correctAnswer: 'Piasek', points: 0 },
   { id: 5, text: 'Podaj popularny napój', correctAnswer: 'Woda', points: 0 },
 ]
 
 const createEmptyFastMoneyAnswers = (): FastMoneyPlayerAnswer[] =>
-  FAST_MONEY_QUESTIONS.map(() => ({ givenAnswer: '', points: 0, revealed: false }))
+  FAST_MONEY_QUESTIONS.map(() => ({
+    givenAnswer: '',
+    points: 0,
+    revealed: false,
+  }))
 
-function parseQuestions(data: { id: number; text: string; answers: { id: number; text: string; points: number }[] }[]): Question[] {
+function parseQuestions(
+  data: {
+    id: number
+    text: string
+    answers: { id: number; text: string; points: number }[]
+  }[]
+): Question[] {
   return data.map((q) => ({
     ...q,
     answers: q.answers.map((a) => ({ ...a, revealed: false })),
@@ -161,7 +185,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({
       currentQuestion: {
         ...cq,
-        answers: cq.answers.map((a) => (a.id === answerId ? { ...a, revealed: false } : a)),
+        answers: cq.answers.map((a) =>
+          a.id === answerId ? { ...a, revealed: false } : a
+        ),
       },
       roundPoints: Math.max(0, get().roundPoints - pointsToSubtract),
     })
@@ -192,7 +218,10 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   addRoundPointsToTeam: (team) => {
     const teams = [...get().teams] as [Team, Team]
-    teams[team] = { ...teams[team], score: teams[team].score + get().roundPoints }
+    teams[team] = {
+      ...teams[team],
+      score: teams[team].score + get().roundPoints,
+    }
     set({ teams, roundPoints: 0, phase: 'round_end' })
   },
 
@@ -214,7 +243,10 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   adjustTeamScore: (team, delta) => {
     const teams = [...get().teams] as [Team, Team]
-    teams[team] = { ...teams[team], score: Math.max(0, teams[team].score + delta) }
+    teams[team] = {
+      ...teams[team],
+      score: Math.max(0, teams[team].score + delta),
+    }
     set({ teams })
   },
 
@@ -239,7 +271,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     }),
 
   setFastMoneyPlayerAnswer: (player, index, answer) => {
-    const key = player === 1 ? 'fastMoneyPlayer1Answers' : 'fastMoneyPlayer2Answers'
+    const key =
+      player === 1 ? 'fastMoneyPlayer1Answers' : 'fastMoneyPlayer2Answers'
     const answers = [...get()[key]]
     answers[index] = { ...answers[index], ...answer }
     set({ [key]: answers })
@@ -248,20 +281,34 @@ export const useGameStore = create<GameState>((set, get) => ({
   setFastMoneyActivePlayer: (player) => set({ fastMoneyActivePlayer: player }),
 
   revealFastMoneyAnswer: (player, index) => {
-    const key = player === 1 ? 'fastMoneyPlayer1Answers' : 'fastMoneyPlayer2Answers'
+    const key =
+      player === 1 ? 'fastMoneyPlayer1Answers' : 'fastMoneyPlayer2Answers'
     const answers = [...get()[key]]
     answers[index] = { ...answers[index], revealed: true }
     const total = [
       ...get().fastMoneyPlayer1Answers,
       ...get().fastMoneyPlayer2Answers,
     ]
-      .filter((a) => a.revealed || (player === 1 && index >= 0 ? answers[index].revealed : false))
+      .filter(
+        (a) =>
+          a.revealed ||
+          (player === 1 && index >= 0 ? answers[index].revealed : false)
+      )
       .reduce((sum, a) => sum + a.points, 0)
-    set({ [key]: answers, fastMoneyTotalPoints: calculateFastMoneyTotal(get(), player, index, answers) })
+    set({
+      [key]: answers,
+      fastMoneyTotalPoints: calculateFastMoneyTotal(
+        get(),
+        player,
+        index,
+        answers
+      ),
+    })
   },
 
   revealAllFastMoneyAnswers: (player) => {
-    const key = player === 1 ? 'fastMoneyPlayer1Answers' : 'fastMoneyPlayer2Answers'
+    const key =
+      player === 1 ? 'fastMoneyPlayer1Answers' : 'fastMoneyPlayer2Answers'
     const answers = get()[key].map((a) => ({ ...a, revealed: true }))
     set({ [key]: answers })
   },

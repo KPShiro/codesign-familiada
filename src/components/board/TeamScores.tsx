@@ -10,7 +10,11 @@ interface TeamScoresProps {
   roundPoints: number
 }
 
-export default function TeamScores({ teams, activeTeam, roundPoints }: TeamScoresProps) {
+export default function TeamScores({
+  teams,
+  activeTeam,
+  roundPoints,
+}: TeamScoresProps) {
   const prevScores = useRef<[number, number]>([0, 0])
 
   useEffect(() => {
@@ -26,17 +30,17 @@ export default function TeamScores({ teams, activeTeam, roundPoints }: TeamScore
       {([0, 1] as const).map((i) => (
         <div
           key={i}
-          className={`flex-1 flex flex-col items-center justify-center py-3 px-4 rounded-xl border-2 transition-all
-            ${activeTeam === i
-              ? 'border-yellow-400 bg-yellow-950/40 team-active'
+          className={`flex flex-1 flex-col items-center justify-center rounded-xl border-2 px-4 py-3 transition-all ${
+            activeTeam === i
+              ? 'team-active border-yellow-400 bg-yellow-950/40'
               : 'border-blue-700 bg-blue-950/50'
-            }`}
+          }`}
         >
-          <span className="text-xs sm:text-sm text-blue-300 uppercase tracking-wider font-semibold mb-1">
+          <span className="mb-1 text-xs font-semibold tracking-wider text-blue-300 uppercase sm:text-sm">
             {teams[i].name}
           </span>
           <span
-            className="text-3xl sm:text-4xl font-black"
+            className="text-3xl font-black sm:text-4xl"
             style={{ color: activeTeam === i ? '#f5c518' : '#e2e8f0' }}
           >
             {teams[i].score}
@@ -45,9 +49,13 @@ export default function TeamScores({ teams, activeTeam, roundPoints }: TeamScore
       ))}
 
       {roundPoints > 0 && (
-        <div className="flex flex-col items-center justify-center px-6 py-3 rounded-xl border-2 border-yellow-500 bg-yellow-950/40">
-          <span className="text-xs text-yellow-300 uppercase tracking-wider">Runda</span>
-          <span className="text-3xl sm:text-4xl font-black text-yellow-400">{roundPoints}</span>
+        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-yellow-500 bg-yellow-950/40 px-6 py-3">
+          <span className="text-xs tracking-wider text-yellow-300 uppercase">
+            Runda
+          </span>
+          <span className="text-3xl font-black text-yellow-400 sm:text-4xl">
+            {roundPoints}
+          </span>
         </div>
       )}
     </div>

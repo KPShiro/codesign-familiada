@@ -73,12 +73,16 @@ export default function FastMoneyHost() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-black text-purple-300 uppercase tracking-wider">Fast Money</h2>
-        <div className="flex gap-2 items-center">
-          <span className="text-yellow-400 font-black text-2xl">{fastMoneyTotalPoints} pkt</span>
+        <h2 className="text-lg font-black tracking-wider text-purple-300 uppercase">
+          Fast Money
+        </h2>
+        <div className="flex items-center gap-2">
+          <span className="text-2xl font-black text-yellow-400">
+            {fastMoneyTotalPoints} pkt
+          </span>
           <button
             onClick={() => setPhase('idle')}
-            className="text-xs px-2 py-1 rounded border border-blue-700 text-blue-400 hover:bg-blue-900 transition-all"
+            className="rounded border border-blue-700 px-2 py-1 text-xs text-blue-400 transition-all hover:bg-blue-900"
           >
             ← Wróć
           </button>
@@ -86,32 +90,33 @@ export default function FastMoneyHost() {
       </div>
 
       {/* Player selector + timer */}
-      <div className="flex gap-2 items-center">
+      <div className="flex items-center gap-2">
         {([1, 2] as const).map((p) => (
           <button
             key={p}
             onClick={() => switchPlayer(p)}
-            className={`flex-1 py-2 rounded-lg font-bold text-sm border transition-all
-              ${fastMoneyActivePlayer === p
+            className={`flex-1 rounded-lg border py-2 text-sm font-bold transition-all ${
+              fastMoneyActivePlayer === p
                 ? 'border-purple-400 bg-purple-950/50 text-purple-300'
                 : 'border-blue-700 text-blue-400 hover:bg-blue-900/40'
-              }`}
+            }`}
           >
             Gracz {p}
           </button>
         ))}
 
-        <div className={`w-14 h-10 flex items-center justify-center rounded-lg font-black text-xl border-2
-          ${timer <= 5 ? 'border-red-500 text-red-400 timer-warning' : 'border-blue-700 text-white'}`}>
+        <div
+          className={`flex h-10 w-14 items-center justify-center rounded-lg border-2 text-xl font-black ${timer <= 5 ? 'timer-warning border-red-500 text-red-400' : 'border-blue-700 text-white'}`}
+        >
           {timer}
         </div>
         <button
           onClick={timerRunning ? stopTimer : startTimer}
-          className={`px-3 py-2 rounded-lg text-sm font-bold border transition-all
-            ${timerRunning
+          className={`rounded-lg border px-3 py-2 text-sm font-bold transition-all ${
+            timerRunning
               ? 'border-red-600 bg-red-950/40 text-red-400 hover:bg-red-900/40'
               : 'border-green-700 bg-green-950/40 text-green-400 hover:bg-green-900/40'
-            }`}
+          }`}
         >
           {timerRunning ? '⏸' : '▶'}
         </button>
@@ -125,16 +130,17 @@ export default function FastMoneyHost() {
         return (
           <div
             key={player}
-            className={`p-3 rounded-xl border-2 transition-all
-              ${isActive ? 'border-purple-500 bg-purple-950/20' : 'border-blue-800 bg-blue-950/30'}`}
+            className={`rounded-xl border-2 p-3 transition-all ${isActive ? 'border-purple-500 bg-purple-950/20' : 'border-blue-800 bg-blue-950/30'}`}
           >
-            <div className="flex items-center justify-between mb-2">
-              <h3 className={`text-sm font-bold uppercase tracking-wider ${isActive ? 'text-purple-300' : 'text-blue-400'}`}>
+            <div className="mb-2 flex items-center justify-between">
+              <h3
+                className={`text-sm font-bold tracking-wider uppercase ${isActive ? 'text-purple-300' : 'text-blue-400'}`}
+              >
                 Gracz {player}
               </h3>
               <button
                 onClick={() => handleRevealAll(player)}
-                className="text-xs px-2 py-0.5 rounded border border-amber-700 text-amber-400 hover:bg-amber-950/40 transition-all"
+                className="rounded border border-amber-700 px-2 py-0.5 text-xs text-amber-400 transition-all hover:bg-amber-950/40"
               >
                 Odkryj wszystkie
               </button>
@@ -144,17 +150,23 @@ export default function FastMoneyHost() {
               {fastMoneyQuestions.map((q, idx) => {
                 const ans = answers[idx]
                 return (
-                  <div key={q.id} className="flex gap-2 items-center">
-                    <span className="text-blue-500 font-mono text-xs w-4">{idx + 1}.</span>
-                    <span className="flex-1 text-xs text-blue-200 truncate">{q.text}</span>
+                  <div key={q.id} className="flex items-center gap-2">
+                    <span className="w-4 font-mono text-xs text-blue-500">
+                      {idx + 1}.
+                    </span>
+                    <span className="flex-1 truncate text-xs text-blue-200">
+                      {q.text}
+                    </span>
 
                     {/* Given answer input */}
                     <input
-                      className="w-28 bg-blue-900 border border-blue-700 rounded px-2 py-0.5 text-xs text-white focus:outline-none focus:border-purple-400"
+                      className="w-28 rounded border border-blue-700 bg-blue-900 px-2 py-0.5 text-xs text-white focus:border-purple-400 focus:outline-none"
                       placeholder="Odpowiedź..."
                       value={ans?.givenAnswer ?? ''}
                       onChange={(e) =>
-                        setFastMoneyPlayerAnswer(player, idx, { givenAnswer: e.target.value })
+                        setFastMoneyPlayerAnswer(player, idx, {
+                          givenAnswer: e.target.value,
+                        })
                       }
                     />
 
@@ -163,11 +175,13 @@ export default function FastMoneyHost() {
                       type="number"
                       min={0}
                       max={100}
-                      className="w-14 bg-blue-900 border border-blue-700 rounded px-2 py-0.5 text-xs text-white text-right focus:outline-none focus:border-yellow-400"
+                      className="w-14 rounded border border-blue-700 bg-blue-900 px-2 py-0.5 text-right text-xs text-white focus:border-yellow-400 focus:outline-none"
                       placeholder="Pkt"
                       value={ans?.points || ''}
                       onChange={(e) =>
-                        setFastMoneyPlayerAnswer(player, idx, { points: Number(e.target.value) })
+                        setFastMoneyPlayerAnswer(player, idx, {
+                          points: Number(e.target.value),
+                        })
                       }
                     />
 
@@ -175,11 +189,11 @@ export default function FastMoneyHost() {
                     <button
                       onClick={() => handleReveal(player, idx)}
                       disabled={ans?.revealed}
-                      className={`px-2 py-0.5 rounded text-xs font-bold transition-all
-                        ${ans?.revealed
-                          ? 'bg-green-900/40 text-green-500 cursor-default'
-                          : 'bg-purple-900 hover:bg-purple-700 text-purple-200'
-                        }`}
+                      className={`rounded px-2 py-0.5 text-xs font-bold transition-all ${
+                        ans?.revealed
+                          ? 'cursor-default bg-green-900/40 text-green-500'
+                          : 'bg-purple-900 text-purple-200 hover:bg-purple-700'
+                      }`}
                     >
                       {ans?.revealed ? '✓' : 'Odkryj'}
                     </button>

@@ -35,7 +35,7 @@ export default function BoardPage() {
       {/* Fullscreen button */}
       <button
         onClick={toggleFullscreen}
-        className="fixed bottom-4 right-4 z-50 bg-blue-900/80 hover:bg-blue-700 text-blue-300 hover:text-white text-xs px-3 py-1.5 rounded-lg border border-blue-700 transition-all backdrop-blur"
+        className="fixed right-4 bottom-4 z-50 rounded-lg border border-blue-700 bg-blue-900/80 px-3 py-1.5 text-xs text-blue-300 backdrop-blur transition-all hover:bg-blue-700 hover:text-white"
         title="Pełny ekran (F)"
       >
         ⛶ Pełny ekran

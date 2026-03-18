@@ -27,8 +27,14 @@ function playTone(
   oscillator.frequency.setValueAtTime(frequency, ctx.currentTime + delay)
 
   gainNode.gain.setValueAtTime(0, ctx.currentTime + delay)
-  gainNode.gain.linearRampToValueAtTime(gainValue, ctx.currentTime + delay + 0.01)
-  gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration)
+  gainNode.gain.linearRampToValueAtTime(
+    gainValue,
+    ctx.currentTime + delay + 0.01
+  )
+  gainNode.gain.exponentialRampToValueAtTime(
+    0.001,
+    ctx.currentTime + delay + duration
+  )
 
   oscillator.start(ctx.currentTime + delay)
   oscillator.stop(ctx.currentTime + delay + duration)
