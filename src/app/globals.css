@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --bg-board: #0a1628;
@@ -9,9 +9,17 @@
   --color-strike: #e53e3e;
 }
 
+@theme {
+  --color-primary: var(--color-blue-500);
+  --color-on-primary: var(--color-white);
+
+  --color-surface-0: var(--color-gray-900);
+  --color-on-surface-0: var(--color-gray-100);
+}
+
 body {
-  background: #111827;
-  color: #f9fafb;
+  background: var(--color-surface-0);
+  color: var(--color-on-surface-0);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -56,9 +64,18 @@ body {
 
 /* ── Strike animation ── */
 @keyframes strike-bounce {
-  0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
-  60%  { transform: scale(1.3) rotate(5deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  0% {
+    transform: scale(0) rotate(-10deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.3) rotate(5deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 .strike-appear {
@@ -67,9 +84,16 @@ body {
 
 /* ── Score pop animation ── */
 @keyframes score-pop {
-  0%   { transform: scale(1); }
-  50%  { transform: scale(1.25); color: #ffd700; }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+    color: #ffd700;
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .score-pop {
@@ -78,8 +102,13 @@ body {
 
 /* ── Pulse for active team ── */
 @keyframes team-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 197, 24, 0.5); }
-  50%       { box-shadow: 0 0 0 12px rgba(245, 197, 24, 0); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 197, 24, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(245, 197, 24, 0);
+  }
 }
 
 .team-active {
@@ -100,8 +129,13 @@ body {
 
 /* ── Fast Money timer ── */
 @keyframes timer-pulse {
-  0%, 100% { color: #f5c518; }
-  50%       { color: #ef4444; }
+  0%,
+  100% {
+    color: #f5c518;
+  }
+  50% {
+    color: #ef4444;
+  }
 }
 
 .timer-warning {
