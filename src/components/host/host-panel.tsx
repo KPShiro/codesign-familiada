@@ -3,16 +3,15 @@
 import { useBroadcastHost } from '@/lib/broadcast'
 import { useGameStore } from '@/lib/store'
 import { cn } from '@/utils/cn'
-import AnswerControls from './AnswerControls'
+import AnswersSection from './answers-section'
 import FastMoneyHost from './FastMoneyHost'
-import QuestionSelector from './QuestionSelector'
-import TeamControls from './TeamControls'
+import QuestionSection from './questions-section'
+import TeamsControls from './teams-controls'
 
 export default function HostPanel() {
   useBroadcastHost()
 
   const phase = useGameStore((s) => s.phase)
-  const currentQuestion = useGameStore((s) => s.currentQuestion)
 
   if (phase === 'fastmoney') {
     return (
@@ -35,19 +34,16 @@ export default function HostPanel() {
   return (
     <div
       className={cn(
-        'grid h-screen min-h-screen',
-        currentQuestion
-          ? 'grid-cols-[480px_2fr_480px]'
-          : 'grid-cols-[480px_1fr]'
+        'mx-auto grid h-screen min-h-screen max-w-500 grid-cols-[480px_1fr_480px]'
       )}
     >
       <aside className="flex flex-col overflow-hidden border-r-2 border-current/15">
-        <QuestionSelector />
+        <QuestionSection />
       </aside>
       <div className="border-r-2 border-current/15">
-        <AnswerControls />
+        <AnswersSection />
       </div>
-      {currentQuestion ? <TeamControls /> : null}
+      <TeamsControls />
     </div>
   )
 }

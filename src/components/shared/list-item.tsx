@@ -1,35 +1,31 @@
 import { cn } from '@/utils/cn'
 import { ChevronRightIcon } from 'lucide-react'
 
-type ListItemProps = Pick<
+type MenuButtonProps = Pick<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   'className' | 'onClick' | 'disabled'
 > & {
   primaryText: string
   secondaryText?: string
   icon?: React.ReactNode
-  isSelected?: boolean
 }
 
-export default function ListItem({
+export default function MenuButton({
   primaryText,
   secondaryText,
   icon,
-  isSelected = false,
   className,
   ...props
-}: ListItemProps) {
+}: MenuButtonProps) {
   return (
     <button
       {...props}
       type="button"
       className={cn(
         'justify-content group relative flex w-full items-center gap-4 border-2 p-4 pr-5 text-left select-none',
-        'rounded-md border-current/10 bg-current/5 enabled:cursor-pointer',
+        'rounded-md border-current/15 bg-current/5 enabled:cursor-pointer',
+        'enabled:hover:border-primary/40 enabled:hover:bg-primary/10',
         'disabled:opacity-disabled disabled:cursor-not-allowed',
-        isSelected
-          ? 'border-primary bg-primary/25 active:bg-primary/35'
-          : 'enabled:hover:border-primary enabled:active:bg-current/10',
         className
       )}
     >

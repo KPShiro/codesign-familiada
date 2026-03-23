@@ -6,24 +6,26 @@ import { cn } from '@/utils/cn'
 import { XIcon } from 'lucide-react'
 import Button from '../shared/button'
 
-export default function StrikeControls() {
+export default function StrikesControls() {
   const { strikes, addStrike, resetStrikes } = useGameStore()
 
-  const isStrikesMaxed = strikes >= MAX_STRIKES
+  const canAddStrike = strikes < MAX_STRIKES
 
   function handleAddStrike() {
+    if (!canAddStrike) {
+      return
+    }
+
     addStrike()
     playWrong()
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="flex items-center gap-2">
       <div
         className={cn(
-          'flex h-10 items-center gap-1 rounded-md border-2 p-1',
-          isStrikesMaxed
-            ? 'border-danger outline-danger animate-ping-outline ping-outline-color-danger'
-            : 'border-current/15'
+          'flex h-12 items-center gap-1 rounded-md border-2 p-1',
+          strikes > 0 ? 'border-danger' : 'border-current/15'
         )}
       >
         {Array.from({ length: MAX_STRIKES }).map((_, i) => (
@@ -31,26 +33,28 @@ export default function StrikeControls() {
             key={i}
             className={cn(
               'flex aspect-square h-full items-center justify-center rounded-xs',
-              i < strikes ? 'bg-danger' : 'bg-current/5'
+              i < strikes ? 'bg-danger/35' : 'bg-current/5'
             )}
           >
             <XIcon
               className={cn(
                 '',
-                i < strikes ? 'text-on-danger' : 'text-current/15'
+                i < strikes ? 'text-danger' : 'text-current/15'
               )}
             />
           </div>
         ))}
       </div>
-      <div className="flex gap-1">
-        <Button onClick={handleAddStrike} variant="outlined">
-          Add Strike
-        </Button>
-        <Button onClick={resetStrikes} variant="outlined">
-          Rest Strikes
-        </Button>
-      </div>
+      <Button
+        onClick={handleAddStrike}
+        variant="outlined"
+        disabled={!canAddStrike}
+      >
+        Add
+      </Button>
+      <Button onClick={resetStrikes} variant="outlined">
+        Reset
+      </Button>
     </div>
   )
 }

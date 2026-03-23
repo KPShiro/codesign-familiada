@@ -18,14 +18,16 @@ export default function Button({
       type={props.type || 'button'}
       className={cn(
         'relative flex items-center justify-center overflow-clip rounded-md border-2 border-transparent font-medium',
-        'duration-150 enabled:cursor-pointer enabled:transition-transform enabled:active:scale-98',
-        size == 'md' && 'h-10 gap-2 px-4 text-sm',
+        'enabled:cursor-pointer enabled:transition-transform enabled:duration-75 enabled:active:scale-98',
+        'disabled:cursor-not-allowed disabled:text-current/40',
+        size == 'md' && 'h-12 gap-2 px-4 text-sm',
         size == 'sm' && 'h-8 gap-1.5 px-2.5 text-xs',
         variant === 'filled' &&
-          'enabled:bg-primary enabled:text-on-primary enabled:hover:bg-primary/90 enabled:active:bg-primary/80 disabled:bg-current/15',
+          'enabled:bg-primary enabled:text-on-primary enabled:hover:bg-primary/90 enabled:active:bg-primary/80',
+        variant === 'filled' && 'disabled:bg-current/15',
         variant === 'outlined' &&
-          'enabled:text-primary enabled:border-current/25 enabled:bg-transparent enabled:hover:bg-current/5 enabled:active:bg-current/10 disabled:border-current/15',
-        'disabled:cursor-not-allowed disabled:text-current/50',
+          'enabled:border-current/15 enabled:bg-current/5 enabled:text-current enabled:hover:border-current/25 enabled:hover:bg-current/10',
+        variant === 'outlined' && 'disabled:border-current/15',
         className
       )}
     >

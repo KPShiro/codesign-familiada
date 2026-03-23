@@ -11,19 +11,17 @@
 }
 
 @theme {
-  --color-primary: var(--color-yellow-400);
-  --color-on-primary: var(--color-yellow-950);
+  --color-primary: var(--color-blue-500);
+  --color-on-primary: var(--color-blue-950);
 
   --color-danger: var(--color-red-500);
   --color-on-danger: var(--color-white);
 
-  --color-surface-0: var(--color-gray-950);
-  --color-on-surface-0: var(--color-gray-50);
+  --color-surface-0: color-mix(in srgb, var(--color-primary) 2%, black);
+  --color-on-surface-0: color-mix(in srgb, var(--color-surface-0) 10%, white);
 
-  --color-surface-1: var(--color-gray-900);
-  --color-on-surface-1: var(--color-gray-50);
-
-  --container-page: 1024px;
+  --color-surface-1: color-mix(in srgb, var(--color-primary) 16%, black);
+  --color-on-surface-1: color-mix(in srgb, var(--color-surface-1) 10%, white);
 
   --opacity-disabled: 0.5;
 }
@@ -31,8 +29,9 @@
 body {
   color: var(--color-on-surface-0);
   background: linear-gradient(
-    var(--color-surface-0) 0%,
-    var(--color-surface-1) 100%
+    -45deg,
+    var(--color-surface-1) 0%,
+    var(--color-surface-0) 100%
   );
 }
 
