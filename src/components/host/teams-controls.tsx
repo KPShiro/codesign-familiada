@@ -5,14 +5,7 @@ import Button from '../shared/button'
 import Input from '../shared/input'
 
 export default function TeamsControls() {
-  const {
-    teams,
-    activeTeam,
-    setTeamName,
-    setTeamScore,
-    resetRound,
-    startFastMoney,
-  } = useGameStore()
+  const { teams, setTeamName, setTeamScore, resetRound } = useGameStore()
 
   function saveName(team: 0 | 1, name: string) {
     setTeamName(team, name.trim() || teams[team].name)
@@ -27,9 +20,6 @@ export default function TeamsControls() {
       <div className="flex flex-col gap-2">
         <Button variant="filled" onClick={resetRound}>
           New Round
-        </Button>
-        <Button variant="outlined" onClick={startFastMoney}>
-          Fast Money
         </Button>
       </div>
       {([0, 1] as const).map((i) => (

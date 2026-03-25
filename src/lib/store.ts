@@ -19,20 +19,7 @@ export interface Team {
   score: number
 }
 
-export interface FastMoneyQuestion {
-  id: number
-  text: string
-  correctAnswer: string
-  points: number
-}
-
-export interface FastMoneyPlayerAnswer {
-  givenAnswer: string
-  points: number
-  revealed: boolean
-}
-
-export type GamePhase = 'idle' | 'playing' | 'steal' | 'round_end' | 'fastmoney'
+export type GamePhase = 'idle' | 'playing' | 'steal' | 'round_end'
 
 export const MAX_STRIKES = 3
 
@@ -51,13 +38,6 @@ export interface GameState {
   // Teams
   teams: [Team, Team]
 
-  // Fast Money
-  fastMoneyQuestions: FastMoneyQuestion[]
-  fastMoneyPlayer1Answers: FastMoneyPlayerAnswer[]
-  fastMoneyPlayer2Answers: FastMoneyPlayerAnswer[]
-  fastMoneyActivePlayer: 1 | 2 | null
-  fastMoneyTotalPoints: number
-
   // Actions
   loadQuestion: (index: number) => void
   revealAnswer: (answerId: number) => void
@@ -73,43 +53,7 @@ export interface GameState {
   setTeamScore: (team: 0 | 1, score: number) => void
   adjustTeamScore: (team: 0 | 1, delta: number) => void
   resetRound: () => void
-
-  // Fast Money actions
-  startFastMoney: () => void
-  setFastMoneyPlayerAnswer: (
-    player: 1 | 2,
-    index: number,
-    answer: Partial<FastMoneyPlayerAnswer>
-  ) => void
-  setFastMoneyActivePlayer: (player: 1 | 2 | null) => void
-  revealFastMoneyAnswer: (player: 1 | 2, index: number) => void
-  revealAllFastMoneyAnswers: (player: 1 | 2) => void
 }
-
-const FAST_MONEY_QUESTIONS: FastMoneyQuestion[] = [
-  {
-    id: 1,
-    text: 'Podaj popularny kolor samochodu',
-    correctAnswer: 'Czarny',
-    points: 0,
-  },
-  { id: 2, text: 'Podaj kraj w Europie', correctAnswer: 'Niemcy', points: 0 },
-  {
-    id: 3,
-    text: 'Podaj zwierzę żyjące w lesie',
-    correctAnswer: 'Jeleń',
-    points: 0,
-  },
-  { id: 4, text: 'Podaj rzecz na plaży', correctAnswer: 'Piasek', points: 0 },
-  { id: 5, text: 'Podaj popularny napój', correctAnswer: 'Woda', points: 0 },
-]
-
-const createEmptyFastMoneyAnswers = (): FastMoneyPlayerAnswer[] =>
-  FAST_MONEY_QUESTIONS.map(() => ({
-    givenAnswer: '',
-    points: 0,
-    revealed: false,
-  }))
 
 function parseQuestions(
   data: {
@@ -137,12 +81,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     { name: 'Drużyna 1', score: 0 },
     { name: 'Drużyna 2', score: 0 },
   ],
-
-  fastMoneyQuestions: FAST_MONEY_QUESTIONS,
-  fastMoneyPlayer1Answers: createEmptyFastMoneyAnswers(),
-  fastMoneyPlayer2Answers: createEmptyFastMoneyAnswers(),
-  fastMoneyActivePlayer: null,
-  fastMoneyTotalPoints: 0,
 
   loadQuestion: (index) => {
     const q = get().questions[index]
@@ -268,72 +206,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       phase: 'idle',
       activeTeam: null,
     }),
-
-  startFastMoney: () =>
-    set({
-      phase: 'fastmoney',
-      fastMoneyPlayer1Answers: createEmptyFastMoneyAnswers(),
-      fastMoneyPlayer2Answers: createEmptyFastMoneyAnswers(),
-      fastMoneyActivePlayer: 1,
-      fastMoneyTotalPoints: 0,
-    }),
-
-  setFastMoneyPlayerAnswer: (player, index, answer) => {
-    const key =
-      player === 1 ? 'fastMoneyPlayer1Answers' : 'fastMoneyPlayer2Answers'
-    const answers = [...get()[key]]
-    answers[index] = { ...answers[index], ...answer }
-    set({ [key]: answers })
-  },
-
-  setFastMoneyActivePlayer: (player) => set({ fastMoneyActivePlayer: player }),
-
-  revealFastMoneyAnswer: (player, index) => {
-    const key =
-      player === 1 ? 'fastMoneyPlayer1Answers' : 'fastMoneyPlayer2Answers'
-    const answers = [...get()[key]]
-    answers[index] = { ...answers[index], revealed: true }
-    const total = [
-      ...get().fastMoneyPlayer1Answers,
-      ...get().fastMoneyPlayer2Answers,
-    ]
-      .filter(
-        (a) =>
-          a.revealed ||
-          (player === 1 && index >= 0 ? answers[index].revealed : false)
-      )
-      .reduce((sum, a) => sum + a.points, 0)
-    set({
-      [key]: answers,
-      fastMoneyTotalPoints: calculateFastMoneyTotal(
-        get(),
-        player,
-        index,
-        answers
-      ),
-    })
-  },
-
-  revealAllFastMoneyAnswers: (player) => {
-    const key =
-      player === 1 ? 'fastMoneyPlayer1Answers' : 'fastMoneyPlayer2Answers'
-    const answers = get()[key].map((a) => ({ ...a, revealed: true }))
-    set({ [key]: answers })
-  },
 }))
-
-function calculateFastMoneyTotal(
-  state: GameState,
-  revealedPlayer: 1 | 2,
-  revealedIndex: number,
-  newAnswers: FastMoneyPlayerAnswer[]
-): number {
-  const p1 = revealedPlayer === 1 ? newAnswers : state.fastMoneyPlayer1Answers
-  const p2 = revealedPlayer === 2 ? newAnswers : state.fastMoneyPlayer2Answers
-  return [...p1, ...p2]
-    .filter((a) => a.revealed)
-    .reduce((sum, a) => sum + a.points, 0)
-}
 
 // Serializable snapshot for BroadcastChannel
 export type GameSnapshot = Omit<
@@ -341,6 +214,7 @@ export type GameSnapshot = Omit<
   | 'loadQuestion'
   | 'revealAnswer'
   | 'hideAnswer'
+  | 'hideAllAnswers'
   | 'revealAllAnswers'
   | 'addStrike'
   | 'resetStrikes'
@@ -351,11 +225,6 @@ export type GameSnapshot = Omit<
   | 'setTeamScore'
   | 'adjustTeamScore'
   | 'resetRound'
-  | 'startFastMoney'
-  | 'setFastMoneyPlayerAnswer'
-  | 'setFastMoneyActivePlayer'
-  | 'revealFastMoneyAnswer'
-  | 'revealAllFastMoneyAnswers'
 >
 
 export function getSnapshot(state: GameState): GameSnapshot {
@@ -368,11 +237,6 @@ export function getSnapshot(state: GameState): GameSnapshot {
     roundPoints: state.roundPoints,
     phase: state.phase,
     teams: state.teams,
-    fastMoneyQuestions: state.fastMoneyQuestions,
-    fastMoneyPlayer1Answers: state.fastMoneyPlayer1Answers,
-    fastMoneyPlayer2Answers: state.fastMoneyPlayer2Answers,
-    fastMoneyActivePlayer: state.fastMoneyActivePlayer,
-    fastMoneyTotalPoints: state.fastMoneyTotalPoints,
   }
 }
 

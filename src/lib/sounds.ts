@@ -79,8 +79,3 @@ export function playSuccess() {
     playTone(300 + i * 80, 0.1, 'sine', 0.15, i * 0.07)
   }
 }
-
-// Timer tick
-export function playTick() {
-  playTone(800, 0.05, 'square', 0.1)
-}
